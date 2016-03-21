@@ -33,7 +33,8 @@ int main(int argc, char* argv[]){
         //cout<<"Using: "<<fileName<<" we have "<<numFramem<<" internal"
             //<<" page table memory"<<endl;
     }else{
-        cout<<"Incorrect Argument Amount"<<endl;
+        cout<<"Incorrect Argument Amount, use format: "<<endl
+            <<"./lab5 <frames-of-memory> <input-file>"<<endl;
     }
 
     //address space
@@ -43,10 +44,12 @@ int main(int argc, char* argv[]){
         addrSpace[i].pnum = -1;
         addrSpace[i].pgNum = -1;
     }
+    cout<<"memory created"<<endl;
 
     //"disk" space
     //vector<Process*> disk(diskSize, NULL);
     vector<Process> disk(diskSize);
+    cout<<"disk created"<<endl;
 
     //open file
     ifstream inFile(fileName);
@@ -83,19 +86,20 @@ string cmd;
            // if(disk[proN]->getPgStat(pageN) == 1){
             if(disk[proN].getPgStat(pageN) == 1){
                 inMem = true;
-                //cout<<"Process: "<<proN<<" Page: "<<pageN<<" already in memory"<<endl;
+                cout<<"Process: "<<proN<<" Page: "<<pageN<<" already in memory"<<endl;
             }
 
             for(int p = 0; p<numFramem && !inMem; p++){
                 if(addrSpace[p].pgNum == -1){
                    // addrSpace[p].pnum = disk[proN]->getPnum();
                     addrSpace[p].pnum = disk[proN].getPnum();
+                    //cout<<"disk p: "<<disk[proN].getPnum()<<endl;
                     addrSpace[p].pgNum = pageN;
                     //disk[proN]->setValid(pageN);
                     disk[proN].setValid(pageN);
                     disk[proN].setLocation(pageN, p);
                     inMem = true;
-                    //cout<<"Process: "<<addrSpace[p].pnum<<" Page: "<<addrSpace[p].pgNum<<" was added to memory"<<endl;
+                    cout<<"Process: "<<addrSpace[p].pnum<<" Page: "<<addrSpace[p].pgNum<<" was added to memory"<<endl;
                 }
             }
 
@@ -114,7 +118,7 @@ string cmd;
                 }
             }
 
-            disk[proN] = Process();
+            //disk[proN] = Process();
             
             //cout<<"Process: "<<proN<<" terminated"<<endl;
 
