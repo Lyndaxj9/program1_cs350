@@ -1,3 +1,8 @@
+// Lab 4
+// Ra, Nuri
+// Ademola, Lynda
+// Fischman, Daelin
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
