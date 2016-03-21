@@ -1,10 +1,10 @@
 all: lab4
 
 lab4: lab4.c prints.o
-	gcc -O -o lab4 lab4.c prints.o
+	gcc -g -O -o lab4 lab4.c prints.o
 
 prints.o: prints.c
-	gcc -c prints.c
+	gcc -g -c prints.c
 
 clean:
 	rm -f lab4
