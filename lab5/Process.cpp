@@ -7,12 +7,14 @@ Process::Process(){
     pNum = -1;
     size = 0;
     pages = new int[0];
+    location = new int[0];
 }
 
 Process::Process(int pid, int sizeN){
     pNum = pid;
     size = sizeN;
     pages = new int[size];
+    location = new int[size];
     for(int i = 0; i<size; i++){
         pages[i] = 0;
     }
@@ -20,12 +22,14 @@ Process::Process(int pid, int sizeN){
 
 Process::~Process(){
     delete[] pages;
+    delete[] location;
 }
 
 Process::Process(const Process &rhs){
     pNum = rhs.pNum;
     size = rhs.size;
     pages = new int[size];
+    location = new int[size];
 }
 
 Process& Process::operator=(const Process &rhs){
@@ -34,9 +38,12 @@ Process& Process::operator=(const Process &rhs){
         size = rhs.size;
         //delete[] this->pages;
         int* temp = new int[size];
+        int* tmp = new int[size];
         delete[] pages;
+        delete[] location;
         //this->pages = new int[this->size];
         pages = temp;
+        location = tmp;
         //delete temp;
     }
 
@@ -61,4 +68,8 @@ void Process::setInvalid(int pgN){
 
 int Process::getPgStat(int pgN){
     return pages[pgN];
+}
+
+void Process::setLocation(int pgN, int loc){
+    location[pgN] = loc;
 }

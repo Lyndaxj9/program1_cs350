@@ -6,6 +6,7 @@ class Process{
         int pNum;
         int size;
         int* pages;
+        int* location;
 
     public:
         Process();
@@ -18,6 +19,7 @@ class Process{
         void setValid(int pgN);
         void setInvalid(int pgN);        
         int getPgStat(int pgN);
+        void setLocation(int pgN, int loc);
 };
 
 #endif

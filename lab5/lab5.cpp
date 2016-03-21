@@ -1,3 +1,11 @@
+/*
+ * CS350 Lab5
+ * Team NULL
+ * Omowumi L. Ademola
+ * Nuri Ra
+ * Daelin Fischman
+ * 
+ */
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
@@ -22,8 +30,8 @@ int main(int argc, char* argv[]){
     if(argc==3){
         numFramem = atoi(argv[1]);
         fileName = argv[2];
-        cout<<"Using: "<<fileName<<" we have "<<numFramem<<" internal"
-            <<" page table memory"<<endl;
+        //cout<<"Using: "<<fileName<<" we have "<<numFramem<<" internal"
+            //<<" page table memory"<<endl;
     }else{
         cout<<"Incorrect Argument Amount"<<endl;
     }
@@ -52,7 +60,7 @@ string cmd;
     int pageFault = 0;
 
     while(getline(inFile, lineCmd)){
-        cout<<lineCmd<<endl;            
+        //cout<<lineCmd<<endl;            
         parse.clear();
         parse.str(lineCmd);
         getline(parse, cmd, ' ');
@@ -85,6 +93,7 @@ string cmd;
                     addrSpace[p].pgNum = pageN;
                     //disk[proN]->setValid(pageN);
                     disk[proN].setValid(pageN);
+                    disk[proN].setLocation(pageN, p);
                     inMem = true;
                     //cout<<"Process: "<<addrSpace[p].pnum<<" Page: "<<addrSpace[p].pgNum<<" was added to memory"<<endl;
                 }
@@ -99,6 +108,7 @@ string cmd;
             proN = atoi(buff.c_str());
             for(int p = 0; p<numFramem; p++){
                 if(addrSpace[p].pnum == proN){
+                    disk[proN].setLocation(addrSpace[p].pgNum, -1);
                     addrSpace[p].pnum = -1;
                     addrSpace[p].pgNum = -1;
                 }
@@ -106,7 +116,7 @@ string cmd;
 
             disk[proN] = Process();
             
-            cout<<"Process: "<<proN<<" terminated"<<endl;
+            //cout<<"Process: "<<proN<<" terminated"<<endl;
 
         }else{
             cout<<"Command not supported"<<endl;
