@@ -18,10 +18,6 @@ void terminateProcess(int process) {
 }
 
 int main (int argc, char ** argv) {
-    // if (argc == 1) {
-    //     printUsage();
-    //     return 0;
-    // }
     int u_opt, l_opt, p_opt, r_opt, R_opt, n_opt, N_opt;
     u_opt = l_opt = p_opt = r_opt = R_opt = n_opt = N_opt = 0;
 
@@ -120,6 +116,7 @@ int main (int argc, char ** argv) {
 
     int localityCounter = 0;
     int randomIndex;
+    srand(time(NULL));
     while (procsRemaining > 0) {
         if (l_opt) {
             if (localityCounter % 10 == 0) {
