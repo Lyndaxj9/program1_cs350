@@ -3,6 +3,7 @@
 #include <time.h>
 #include <sstream>
 #include <string.h>
+#include <iostream>
 
 #define LOCALITY_RATE 0.5
 #define LOCALITY_FREQ 0.25
@@ -32,7 +33,8 @@ Process::Process(std::string name, int ref, int pages, int phase, bool loc) {
 
     // Initialize end of phase ranges
     for (int i = 0; i < numPhases-1; i++) {
-        phases[i] = (numPages/numPhases) * (i+1);
+        int phaseLen = numPages/numPhases;
+        phases[i] = phaseLen * (i+1);
     } 
     phases[numPhases-1] = numPages;
 
@@ -104,7 +106,7 @@ std::string Process::start() {
     std::stringstream ss;
     ss.clear();
     ss << numPages;
-    return "START " + name + ss.str() + "\n";
+    return "START " + name + " " + ss.str() + "\n";
 }
 
 std::string Process::terminate() {

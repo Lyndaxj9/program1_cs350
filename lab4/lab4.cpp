@@ -92,12 +92,13 @@ int main (int argc, char ** argv) {
     for (int i = 0; i < ACTIVE_PROCS; i++) {
         validProcesses[i] = -1;
     }
+
     std::stringstream ss;
     for (int i = 0; i < process_num; i++) {
         ss.str(std::string());
-        ss << i;
-        processes[i] = Process(ss.str(), randInt(reference_min, reference_max),
-                randInt(page_min, page_max), phase_num, l_opt);
+        ss << i+1;
+        processes[i] = *(new Process(ss.str(), randInt(reference_min, reference_max),
+                randInt(page_min, page_max), phase_num, l_opt));
     }
 
     if (process_num < ACTIVE_PROCS) {

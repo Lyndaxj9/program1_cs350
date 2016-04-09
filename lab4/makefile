@@ -10,7 +10,7 @@ prints.o: prints.cpp
 	g++ -g -c prints.cpp
 
 test: lab4
-	./lab4 > output.txt; vim output.txt
+	./lab4 -p 10000 -P 25 -r 1000 -R 2000 -n 1000 -N 2500 -l
 
 clean:
 	rm -f lab4
