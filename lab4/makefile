@@ -1,10 +1,16 @@
 all: lab4
 
-lab4: lab4.c prints.o
-	gcc -g -O -o lab4 lab4.c prints.o
+lab4: lab4.cpp Process.o prints.o
+	g++ -g -O -o lab4 lab4.cpp Process.o prints.o
 
-prints.o: prints.c
-	gcc -g -c prints.c
+Process.o: Process.cpp
+	g++ -g -c Process.cpp
+
+prints.o: prints.cpp
+	g++ -g -c prints.cpp
+
+test: lab4
+	./lab4 > output.txt; vim output.txt
 
 clean:
 	rm -f lab4
