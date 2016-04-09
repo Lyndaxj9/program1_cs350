@@ -1,7 +1,7 @@
 all: lab4
 
 lab4: lab4.cpp Process.o prints.o
-	g++ -g -O -o lab4 lab4.cpp Process.o prints.o
+	g++ -g -Wall -o lab4 lab4.cpp Process.o prints.o
 
 Process.o: Process.cpp
 	g++ -g -c Process.cpp

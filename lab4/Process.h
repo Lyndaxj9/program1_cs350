@@ -2,6 +2,7 @@
 
 class Process {
     public:
+        Process();
         Process(std::string name, int ref, int pages, int phase, bool loc);
         ~Process();
 

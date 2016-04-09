@@ -2,10 +2,21 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sstream>
-#include <iostream>
 
 #define LOCALITY_RATE 0.5
 #define LOCALITY_FREQ 0.25
+
+Process::Process() {
+    this->name = "Default Process";
+    numReferences = 10000;
+    numPages = 1000;
+    numPhases = 10;
+    currPhase = 0;
+    currReference = 0;
+    phases = NULL;
+    phaseReferences = NULL;
+    locality = NULL;
+}
 
 Process::Process(std::string name, int ref, int pages, int phase, bool loc) {
     this->name = name;
@@ -46,22 +57,22 @@ Process::Process(std::string name, int ref, int pages, int phase, bool loc) {
 }
 
 Process::~Process() {
-    if (phases) delete [] phases;
-    if (locality) delete [] locality;
-    if (phaseReferences) delete [] phaseReferences;
+    // if (phases) delete [] phases;
+    // if (locality) delete [] locality;
+    // if (phaseReferences) delete [] phaseReferences;
 }
 
 int Process::randInt(int min, int max) {
     // inclusive
-    return rand() % (max - min + 1) + min;
+    return rand() % (max - min+1) + min;
 }
 
 int Process::getRandPage() {
     int ret;
     if (!currPhase) {
-        ret = randInt(0, phases[0]);
+        ret = randInt(0, phases[0]-1);
     } else if (currPhase < numPhases-1) {
-        ret = randInt(phases[currPhase-1], phases[currPhase]);
+        ret = randInt(phases[currPhase-1], phases[currPhase]-1);
     } else {
         ret = randInt(phases[currPhase-1], numPages-1);
     }
@@ -89,12 +100,11 @@ int Process::getNumPages() {
 }
 
 std::string Process::reference(int page) {
-    std::string ret = "REFERENCE " + name + " ";
     std::stringstream ss;
-    ss << page;
-    std::string pageStr;
-    ss >> pageStr;
-    return ret + pageStr + "\n";
+    ss.clear();
+    ss << page+1;
+    std::string ret = "REFERENCE " + name + " " + ss.str() + "\n";
+    return ret;
 }
 
 std::string Process::generate() {
@@ -121,22 +131,22 @@ std::string Process::generate() {
             }
             ret += reference(randomPage);
             currReference++;
+            phaseReferences[currPhase]--;
             if (!phaseReferences[currPhase]) {
                 //std::cout << "NEW PHASE:" << std::endl;
                 currPhase++;
                 return ret;
             }
-            phaseReferences[currPhase]--;
         }
     } else {
         // std::cout << "REGULAR REFERENCE:" << std::endl;
         currReference++;
+        phaseReferences[currPhase]--;
         if (!phaseReferences[currPhase]) {
             //std::cout << "NEW PHASE:" << std::endl;
             currPhase++;
             return ret;
         }
-        phaseReferences[currPhase]--;
         ret += reference(randInt(0, numPages-1));
     }
     return ret;
