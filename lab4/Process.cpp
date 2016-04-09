@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sstream>
-#include <string.h>
-#include <iostream>
 
 #define LOCALITY_RATE 0.5
 #define LOCALITY_FREQ 0.25
