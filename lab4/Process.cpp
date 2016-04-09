@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sstream>
+#include <string.h>
 
 #define LOCALITY_RATE 0.5
 #define LOCALITY_FREQ 0.25
@@ -57,9 +58,9 @@ Process::Process(std::string name, int ref, int pages, int phase, bool loc) {
 }
 
 Process::~Process() {
-    // if (phases) delete [] phases;
-    // if (locality) delete [] locality;
-    // if (phaseReferences) delete [] phaseReferences;
+    if (phases) delete [] phases;
+    if (phaseReferences) delete [] phaseReferences;
+    if (locality) delete [] locality;
 }
 
 int Process::randInt(int min, int max) {
@@ -95,8 +96,19 @@ int Process::getNumReferences() {
     return numReferences;
 }
 
-int Process::getNumPages() {
-    return numPages;
+int Process::getCurrReference() {
+    return currReference;
+}
+
+std::string Process::start() {
+    std::stringstream ss;
+    ss.clear();
+    ss << numPages;
+    return "START " + name + ss.str() + "\n";
+}
+
+std::string Process::terminate() {
+    return "TERMINATE " + name + "\n";
 }
 
 std::string Process::reference(int page) {
@@ -110,21 +122,18 @@ std::string Process::reference(int page) {
 std::string Process::generate() {
     std::string ret = "";
     if (locality[currPhase]){
-        // std::cout << "LOCALITY REFERENCE:" << std::endl;
         int randomPage = getRandPage();
         ret += reference(randomPage);
         randomPage++;
         currReference++;
         phaseReferences[currPhase]--;
         if (!phaseReferences[currPhase]) {
-            //std::cout << "NEW PHASE:" << std::endl;
             currPhase++;
             return ret;
         }
 
         int numLocality = getLocalityReferences() * LOCALITY_FREQ + 1;
         for (int i = 0; i < numLocality; i++) {
-            // roll back locality references if max is reached
             randomPage++;
             if (randomPage >= numPages) {
                 randomPage = phases[numPhases-2];
@@ -133,17 +142,14 @@ std::string Process::generate() {
             currReference++;
             phaseReferences[currPhase]--;
             if (!phaseReferences[currPhase]) {
-                //std::cout << "NEW PHASE:" << std::endl;
                 currPhase++;
                 return ret;
             }
         }
     } else {
-        // std::cout << "REGULAR REFERENCE:" << std::endl;
         currReference++;
         phaseReferences[currPhase]--;
         if (!phaseReferences[currPhase]) {
-            //std::cout << "NEW PHASE:" << std::endl;
             currPhase++;
             return ret;
         }

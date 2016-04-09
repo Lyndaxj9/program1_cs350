@@ -92,23 +92,24 @@ int main (int argc, char ** argv) {
     for (int i = 0; i < ACTIVE_PROCS; i++) {
         validProcesses[i] = -1;
     }
-
-    if (process_num < ACTIVE_PROCS) {
-        for (int i = 0; i < process_num; i++) {
-            validProcesses[i] = i;
-        }
-    } else {
-        for (int i = 0; i < ACTIVE_PROCS; i++) {
-            validProcesses[i] = i;
-        }
-    }
-
     std::stringstream ss;
     for (int i = 0; i < process_num; i++) {
         ss.str(std::string());
         ss << i;
         processes[i] = Process(ss.str(), randInt(reference_min, reference_max),
                 randInt(page_min, page_max), phase_num, l_opt);
+    }
+
+    if (process_num < ACTIVE_PROCS) {
+        for (int i = 0; i < process_num; i++) {
+            validProcesses[i] = i;
+            std::cout << processes[i].start();
+        }
+    } else {
+        for (int i = 0; i < ACTIVE_PROCS; i++) {
+            validProcesses[i] = i;
+            std::cout << processes[i].start();
+        }
     }
 
     int currProcess = 10;
@@ -118,13 +119,13 @@ int main (int argc, char ** argv) {
         while (validProcesses[randProc] == -1) {
             randProc = randInt(0, ACTIVE_PROCS-1);
         }
-        // std::cout << "Random Process: " << randProc << std::endl;
         std::cout << processes[validProcesses[randProc]].generate();
-        if (processes[validProcesses[randProc]].numReferences == 
-                processes[validProcesses[randProc]].currReference) {
-            std::cout << "TERMINATE " << processes[validProcesses[randProc]].name << std::endl;
+        if (processes[validProcesses[randProc]].getNumReferences() == 
+                processes[validProcesses[randProc]].getCurrReference()) {
+            std::cout << processes[validProcesses[randProc]].terminate();
             if (currProcess < process_num) {
                 validProcesses[randProc] = currProcess;
+                std::cout << processes[currProcess].start();
             } else {
                 validProcesses[randProc] = -1;
             }
@@ -132,23 +133,4 @@ int main (int argc, char ** argv) {
             terminated++;
         }
     }
-    
-    //std::cout << processes[2].generate();
-    
-    // std::cout << "ACTIVE PROCESSES:" << std::endl;
-    // for (int i = 0; i < ACTIVE_PROCS; i++) {
-    //     std::cout << validProcesses[i] << std::endl;
-    // }
-
-    //std::cout << processes[1].generate();
-
-    if (processes) delete [] processes;
-    if (validProcesses) delete [] validProcesses;
-
-    // Process p("12345", randInt(reference_min, reference_max),
-    //         randInt(page_min, page_max), phase_num, l_opt); 
-    // while (p.currReference < p.numReferences) {
-    //     std::cout << p.generate();
-    // }
-
 }

@@ -6,6 +6,14 @@ class Process {
         Process(std::string name, int ref, int pages, int phase, bool loc);
         ~Process();
 
+        int getNumReferences();
+        int getCurrReference();
+
+        std::string reference(int page);
+        std::string start();
+        std::string terminate();
+        std::string generate();
+    private:
         std::string name;
         int numReferences;
         int numPages;
@@ -19,9 +27,4 @@ class Process {
         int randInt(int min, int max);
         int getRandPage();
         int getLocalityReferences();
-        int getNumReferences();
-        int getNumPages();
-        std::string reference(int page);
-        std::string generate();
-    private:
 };
