@@ -1,4 +1,8 @@
 #Makefile
+#Team NULL
+#Omowumi L. Ademola
+#Nuri Ra
+#Daelin Fischman
 
 lab5: lab5.o Process.o
 	g++ lab5.o Process.o -g -o lab5
