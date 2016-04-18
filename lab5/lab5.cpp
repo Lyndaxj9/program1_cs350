@@ -69,6 +69,9 @@ int main(int argc, char **argv) {
                 if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (memSize == memFrames) {
                         // memory is at capacity
+                        // ******************************
+                        // ADD REPLACEMENT ALGORITHM HERE
+                        // ******************************
                         pageFaults++;
                         std::cout << "Page Fault, memory full: " << line << std::endl;
                     } else {
