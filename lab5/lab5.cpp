@@ -1,135 +1,136 @@
-/*
- * CS350 Lab5
- * Team NULL
- * Omowumi L. Ademola
- * Nuri Ra
- * Daelin Fischman
- * 
- */
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
-#include <cstdlib>
 #include <sstream>
-#include <string>
-#include <vector>
-#include "Process.h"
-using namespace std;
 
-struct Mempage{
-    int pnum;
-    int pgNum;
+#include "Process.h"
+
+struct MemoryFrame {
+    int processNumber;
+    int pageNumber;
 };
 
-int main(int argc, char* argv[]){
-    int diskSize = 1000;
-
-    int numFramem;
-    const char* fileName;
-
-    if(argc==3){
-        numFramem = atoi(argv[1]);
-        fileName = argv[2];
-        //cout<<"Using: "<<fileName<<" we have "<<numFramem<<" internal"
-            //<<" page table memory"<<endl;
-    }else{
-        cout<<"Incorrect Argument Amount, use format: "<<endl
-            <<"./lab5 <frames-of-memory> <input-file>"<<endl;
+int main(int argc, char **argv) {
+    if (argc < 3) {
+        std::cout << "Usage: ./lab5 <frames-of-memory> <input-file>" << std::endl;
+        return 1;
     }
 
-    //address space
-    Mempage* addrSpace = NULL;
-    addrSpace = new Mempage[numFramem]; //remember to delete memory afterward "delete[] addrSpace;"
-    for(int i = 0; i<numFramem; i++){
-        addrSpace[i].pnum = -1;
-        addrSpace[i].pgNum = -1;
+    int memFrames = atoi(argv[1]);
+    if (memFrames == -1) {
+        std::cout << "Invalid frames of memory.\n" << std::endl;
+        return 1;
     }
-    cout<<"memory created"<<endl;
 
-    //"disk" space
-    //vector<Process*> disk(diskSize, NULL);
-    vector<Process> disk(diskSize);
-    cout<<"disk created"<<endl;
+    Process disk[5000];
+    MemoryFrame * memory = new MemoryFrame[memFrames];
+    int memSize = 0;
+    for (int i = 0; i < memFrames; i++) {
+        memory[i].processNumber = -1;
+        memory[i].pageNumber = -1;
+    }
 
-    //open file
-    ifstream inFile(fileName);
-    string lineCmd;
-    stringstream parse;
-string cmd;
-    string buff;
-    int proN;
-    int addrSize;
-    int pageN;
-    int pageFault = 0;
+    std::ifstream inputFile(argv[2]);
+    if (inputFile.fail()) {
+        std::cout << "Failed to open file." << std::endl;
+        return 1;
+    }
 
-    while(getline(inFile, lineCmd)){
-        //cout<<lineCmd<<endl;            
-        parse.clear();
-        parse.str(lineCmd);
-        getline(parse, cmd, ' ');
-        if(cmd == "START"){
-            getline(parse, buff, ' ');            
-            proN = atoi(buff.c_str());
-            getline(parse, buff, ' ');
-            addrSize = atoi(buff.c_str());
-           //cout<<"proN: "<<proN<<" addS: "<<addrSize<<endl;
-            disk[proN] = Process(proN, addrSize);
-            //Process* aPro = new Process(atoi(proN.c_str()),atoi(addrSize.c_str())); 
-        }else if(cmd == "REFERENCE"){
-            getline(parse, buff, ' ');
-            proN = atoi(buff.c_str());
-            getline(parse, buff, ' ');
-            pageN = atoi(buff.c_str());
-            
-            bool inMem = false;
+    std::string line;
+    std::string command;
+    int processNum;
+    int addressSpaceSize;
+    int virtualPageNum;
 
-           // if(disk[proN]->getPgStat(pageN) == 1){
-            if(disk[proN].getPgStat(pageN) == 1){
-                inMem = true;
-                cout<<"Process: "<<proN<<" Page: "<<pageN<<" already in memory"<<endl;
-            }
+    int diskUsageCounter = 0;
+    int pageFaults = 0;
+    while (getline(inputFile, line)) {
+        std::stringstream ss(line);
+        ss >> command >> processNum;
 
-            for(int p = 0; p<numFramem && !inMem; p++){
-                if(addrSpace[p].pgNum == -1){
-                   // addrSpace[p].pnum = disk[proN]->getPnum();
-                    addrSpace[p].pnum = disk[proN].getPnum();
-                    //cout<<"disk p: "<<disk[proN].getPnum()<<endl;
-                    addrSpace[p].pgNum = pageN;
-                    //disk[proN]->setValid(pageN);
-                    disk[proN].setValid(pageN);
-                    disk[proN].setLocation(pageN, p);
-                    inMem = true;
-                    cout<<"Process: "<<addrSpace[p].pnum<<" Page: "<<addrSpace[p].pgNum<<" was added to memory"<<endl;
+        if (command == "START") {
+            ss >> addressSpaceSize;
+            // std::cout << "START " << processNum << " " << addressSpaceSize << std::endl;
+            Process p(processNum, addressSpaceSize);
+            disk[diskUsageCounter] = p;
+            diskUsageCounter++;
+        } else if (command == "REFERENCE") {
+            ss >> virtualPageNum;
+            // std::cout << "REFERENCE " << processNum << " " << virtualPageNum << std::endl;
+            int found = -1;
+            for (int i = 0; i < diskUsageCounter; i++) {
+                if (disk[i].getProcessNumber() == processNum) {
+                    found = i;
+                    break;
                 }
             }
 
-            if(!inMem){
-                pageFault++;
-                cout<<pageFault<<" page fault(s) so far"<<endl;
+            if (found != -1) {
+                if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
+                    if (memSize == memFrames) {
+                        // memory is at capacity
+                        pageFaults++;
+                        std::cout << "Page Fault, memory full: " << line << std::endl;
+                    } else {
+                        // page replacement
+                        for (int i = 0; i < memFrames; i++) {
+                            if (memory[i].processNumber == -1) {
+                                memory[i].processNumber = processNum;
+                                memory[i].pageNumber = virtualPageNum;
+                                disk[found].setPageLocation(virtualPageNum, i);
+                                break;
+                            }
+                        }
+                        std::cout << "No fault, space in memory: " << line << std::endl;
+                        memSize++;
+                    }
+                } else {
+                    std::cout << "No fault, already exists in memory: " << line << std::endl;
+                }
+            } else {
+                std::cout << "Invalid: " << line << std::endl;
             }
-        }else if(cmd == "TERMINATE"){
-            getline(parse, buff, ' ');
-            proN = atoi(buff.c_str());
-            for(int p = 0; p<numFramem; p++){
-                if(addrSpace[p].pnum == proN){
-                    disk[proN].setLocation(addrSpace[p].pgNum, -1);
-                    addrSpace[p].pnum = -1;
-                    addrSpace[p].pgNum = -1;
+        } else if (command == "TERMINATE") {
+            // std::cout << "TERMINATE " << processNum << std::endl;
+            int found = -1;
+            for (int i = 0; i < diskUsageCounter; i++) {
+                if (disk[i].getProcessNumber() == processNum) {
+                    found = i;
+                    break;
                 }
             }
 
-            //disk[proN] = Process();
-            
-            //cout<<"Process: "<<proN<<" terminated"<<endl;
+            if (found != -1) {
+                for (int i = 0; i < memFrames; i++) {
+                    if (memory[i].processNumber == processNum) {
+                        memory[i].processNumber = -1;
+                        memory[i].pageNumber = -1;
+                        memSize--;
+                    }
+                }
 
-        }else{
-            cout<<"Command not supported"<<endl;
-            exit(1);
+                // get rid of process in disk
+                // disk[found];
+            } else {
+                std::cout << "Invalid: " << line << std::endl;
+            }
+        } else {
+            std::cout << "Unrecognized Command: " << command << std::endl;
         }
     }
 
-    delete[] addrSpace;
-    disk.clear();
+    // std::cout << "Printing Disk Contents:" << std::endl;
+    // for (int i = 0; i < diskUsageCounter; i++) {
+    //     std::cout << "PROCESS " << disk[i].getProcessNumber() 
+    //         << ", SIZE: " << disk[i].getProcessSize() << std::endl;
+    // }
+    // 
+    // std::cout << "Printing Memory Contents:" << std::endl;
+    // for (int i = 0; i < memFrames; i++) {
+    //     std::cout << i << " PROCESS " << memory[i].processNumber
+    //         << ", PAGE #: " << memory[i].pageNumber << std::endl;
+    // }
 
+    delete [] memory;
     return 0;
 }
