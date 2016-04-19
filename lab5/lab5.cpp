@@ -32,6 +32,9 @@ int main(int argc, char **argv) {
     MemoryFrame * test2_memory = new MemoryFrame[memFrames];
     MemoryFrame * test3_memory = new MemoryFrame[memFrames];
     int memSize = 0;
+    int test1_memSize = 0;
+    int test2_memSize = 0;
+    int test3_memSize = 0;
     for (int i = 0; i < memFrames; i++) {
         memory[i].processNumber = -1; memory[i].pageNumber = -1; memory[i].timestamp = -1;
         test1_memory[i].processNumber = -1; test1_memory[i].pageNumber = -1; test1_memory[i].timestamp = -1;
@@ -62,7 +65,13 @@ int main(int argc, char **argv) {
             ss >> addressSpaceSize;
             // std::cout << "START " << processNum << " " << addressSpaceSize << std::endl;
             Process p(processNum, addressSpaceSize);
+            Process test1_p(processNum, addressSpaceSize);
+            Process test2_p(processNum, addressSpaceSize);
+            Process test3_p(processNum, addressSpaceSize);
             disk[diskUsageCounter] = p;
+            test1_disk[diskUsageCounter] = test1_p;
+            test2_disk[diskUsageCounter] = test2_p;
+            test3_disk[diskUsageCounter] = test3_p;
             diskUsageCounter++;
         } else if (command == "REFERENCE") {
             ss >> virtualPageNum;
@@ -78,14 +87,14 @@ int main(int argc, char **argv) {
             if (found != -1) {
                 if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (memSize == memFrames) {
-                        // memory is at capacity
+                        // memory is at capacity, need to replace here
                         // ******************************
                         // ADD REPLACEMENT ALGORITHM HERE
                         // ******************************
                         pageFaults++;
                         std::cout << "Page Fault, memory full: " << line << std::endl;
                     } else {
-                        // page replacement
+                        // not at capacity, just put it into memory
                         for (int i = 0; i < memFrames; i++) {
                             if (memory[i].processNumber == -1) {
                                 memory[i].processNumber = processNum;
@@ -118,6 +127,21 @@ int main(int argc, char **argv) {
                     if (memory[i].processNumber == processNum) {
                         memory[i].processNumber = -1;
                         memory[i].pageNumber = -1;
+                        memSize--;
+                    }
+                    if (test1_memory[i].processNumber == processNum) {
+                        test1_memory[i].processNumber = -1;
+                        test1_memory[i].pageNumber = -1;
+                        memSize--;
+                    }
+                    if (test2_memory[i].processNumber == processNum) {
+                        test2_memory[i].processNumber = -1;
+                        test2_memory[i].pageNumber = -1;
+                        memSize--;
+                    }
+                    if (test3_memory[i].processNumber == processNum) {
+                        test3_memory[i].processNumber = -1;
+                        test3_memory[i].pageNumber = -1;
                         memSize--;
                     }
                 }
