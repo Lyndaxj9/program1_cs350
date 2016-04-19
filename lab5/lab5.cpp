@@ -118,8 +118,7 @@ int main(int argc, char **argv) {
 							}
 						}
 
-						//pageFaults++;
-						std::cout << "Page Fault, memory full " << line << " Kicking out " << tempProc << " " << tempPage << std::endl;
+						pageFaults++;
 					} else {
 						// not at capacity, just put it into memory
 						for (int i = 0; i < memFrames; i++) {
@@ -142,10 +141,6 @@ int main(int argc, char **argv) {
                 //Algorithm 1 - LRU w/in the ref'd process's own pages
                 // if (test1_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                 //     if (test1_memSize == memFrames) {
-                //         // memory is at capacity, need to replace here
-                //         // ******************************
-                //         // ADD REPLACEMENT ALGORITHM HERE
-                //         // ******************************
                 //         // look for process in disk - process was already found in disk?
                 //         //for(int i = 0; i < diskUsageCounter; i++){
                 //           // if the process is found go in and start looking for min page
@@ -157,7 +152,7 @@ int main(int argc, char **argv) {
                 //             int notEmpty = 0;
                 //             int minProc = -1;
                 //             // go through the process's address space and look thru all pages
-                //             for (int j = 0; j < test1_disk[found].getProcessSize(); j++){
+                //             for (int j = 1; j <= test1_disk[found].getProcessSize(); j++){
                 //               notEmpty = 1;
                 //               // if the page is in memory then compare timestamps
                 //               if (test1_disk[found].getPageLocation(j) != -1){
@@ -383,6 +378,7 @@ int main(int argc, char **argv) {
                 }
 
 				time++;
+                totalReferences++;
 			} else {
 				std::cout << "Invalid: " << line << std::endl;
 			}
@@ -434,9 +430,12 @@ int main(int argc, char **argv) {
     std::cout << "Page Fault Amount: " << pageFaults << std::endl;
     std::cout << "Total Page References: " << totalReferences << std::endl;
 
-
     std::cout << "\nAlgorithm 1 Results:" << std::endl;
     std::cout << "Page Fault Amount: " << test1_pageFaults << std::endl;
+    std::cout << "Total Page References: " << totalReferences << std::endl;
+
+    std::cout << "\nAlgorithm 2 Results:" << std::endl;
+    std::cout << "Page Fault Amount: " << test2_pageFaults << std::endl;
     std::cout << "Total Page References: " << totalReferences << std::endl;
 
     std::cout << "\nAlgorithm 3 Results:" << std::endl;
