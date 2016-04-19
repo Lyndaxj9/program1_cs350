@@ -2,7 +2,6 @@
 #include <fstream>
 #include <stdlib.h>
 #include <sstream>
-#include <limits.h>
 
 #include "Process.h"
 
@@ -93,18 +92,42 @@ int main(int argc, char **argv) {
                 // Regular LRU Algorithm
                 if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (memSize == memFrames) {
-                        // memory is at capacity, need to replace here
-                        // ******************************
-                        // ADD REPLACEMENT ALGORITHM HERE
-                        // ******************************
-                        pageFaults++;
-                        std::cout << "Page Fault, memory full: " << line << std::endl;
+
+
+						unsigned long long timeIter = -1;
+						int memAddress = 0;
+						for(int i = 0; i < memFrames; i++)
+						{
+							if(memory[i].timestamp < timeIter)
+							{
+								timeIter = memory[i].timestamp;
+								memAddress = i;
+							}
+						}
+						int tempProc = memory[memAddress].processNumber;
+						int tempPage = memory[memAddress].pageNumber;
+						
+						memory[memAddress].processNumber = processNum;
+						memory[memAddress].pageNumber = virtualPageNum;
+						memory[memAddress].timestamp = time; 
+						disk[found].setPageLocation(virtualPageNum, memAddress);
+						for(int i =0; i<diskUsageCounter; i++)
+						{
+							if(disk[i].getProcessNumber() == tempProc)
+							{
+								disk[i].setPageLocation(tempPage, -1);
+							}
+						}
+
+                        //pageFaults++;
+                        std::cout << "Page Fault, memory full " << line << " Kicking out " << tempProc << " " << tempPage << std::endl;
                     } else {
                         // not at capacity, just put it into memory
                         for (int i = 0; i < memFrames; i++) {
                             if (memory[i].processNumber == -1) {
                                 memory[i].processNumber = processNum;
                                 memory[i].pageNumber = virtualPageNum;
+								memory[i].timestamp = time;
                                 disk[found].setPageLocation(virtualPageNum, i);
                                 break;
                             }
@@ -113,6 +136,7 @@ int main(int argc, char **argv) {
                         memSize++;
                     }
                 } else {
+					memory[disk[found].getPageLocation(virtualPageNum)].timestamp = time;
                     std::cout << "No fault, already exists in memory: " << line << std::endl;
                 }
 
