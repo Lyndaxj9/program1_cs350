@@ -53,15 +53,17 @@ int Process::getPageLocation(int pageNum) {
 
 int Process::getRandomPage() {
     srand(time(NULL));
-    int randPage = (rand() % pagesInMemory);
-    int pageCounter = 0;
     int ret = -1;
-    for (int i = 0; i < addressSpaceSize; i++) {
-        if (pages[i] != -1) {
-            pageCounter++;
-        }
-        if (pageCounter == randPage) {
-            ret = pages[i];
+    if (pagesInMemory > 0) {
+        int randPage = (rand() % pagesInMemory);
+        int pageCounter = 0;
+        for (int i = 0; i < addressSpaceSize; i++) {
+            if (pages[i] != -1) {
+                pageCounter++;
+            }
+            if (pageCounter == randPage) {
+                ret = pages[i];
+            }
         }
     }
     return ret;
