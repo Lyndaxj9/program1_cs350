@@ -318,6 +318,69 @@ int main(int argc, char **argv) {
 					std::cout << "No fault, already exists in memory: " << line << std::endl;
 				}
 
+                //Algorithm 3
+                if (test3_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
+                    if (test3_memSize == memFrames) {
+                        // memory is at capacity, need to replace here
+                        int randomPage = test3_disk[found].getRandomPage();
+                        if (randomPage == -1) { // process has no pages in memory, regular LRU
+                            unsigned long long timeIter = -1;
+                            int memAddress = 0;
+                            for(int i = 0; i < memFrames; i++)
+                            {
+                                if(test3_memory[i].timestamp < timeIter)
+                                {
+                                    timeIter = test3_memory[i].timestamp;
+                                    memAddress = i;
+                                }
+                            }
+                            int tempProc = test3_memory[memAddress].processNumber;
+                            int tempPage = test3_memory[memAddress].pageNumber;
+
+                            test3_memory[memAddress].processNumber = processNum;
+                            test3_memory[memAddress].pageNumber = virtualPageNum;
+                            test3_memory[memAddress].timestamp = time; 
+                            test3_disk[found].setPageLocation(virtualPageNum, memAddress);
+
+                            for(int i =0; i<diskUsageCounter; i++)
+                            {
+                                if(test3_disk[i].getProcessNumber() == tempProc)
+                                {
+                                    test3_disk[i].setPageLocation(tempPage, -1);
+                                }
+                            }
+
+                        } else {
+                            // int oldProcessNum = test3_memory[randomPage].processNumber;
+                            // int oldPageNum = test3_memory[randomPage].pageNumber;
+                            // test3_memory[randomPage].processNumber = processNum;
+                            // test3_memory[randomPage].pageNumber = virtualPageNum;
+                            // test3_memory[randomPage].timestamp = time;
+
+                            // for (int i = 0; i < diskUsageCounter; i++) {
+                            //     if (test3_disk[i].getProcessNumber() == oldProcessNum) {
+                            //         test3_disk[i].setPageLocation(oldPageNum, -1);
+                            //     }
+                            // }
+                        }
+                        test3_pageFaults++;
+                        // std::cout << "Page Fault, memory full: " << line << std::endl;
+                    } else {
+                        // not at capacity, just put it into memory
+                        for (int i = 0; i < memFrames; i++) {
+                            if (test3_memory[i].processNumber == -1) {
+                                test3_memory[i].processNumber = processNum;
+                                test3_memory[i].pageNumber = virtualPageNum;
+                                test3_disk[found].setPageLocation(virtualPageNum, i);
+                                break;
+                            }
+                        }
+                        // std::cout << "No fault, space in memory: " << line << std::endl;
+                        test3_memSize++;
+                    }
+                } else {
+                    // std::cout << "No fault, already exists in memory: " << line << std::endl;
+                }
 
 				time++;
 			} else {
