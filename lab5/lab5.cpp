@@ -8,6 +8,7 @@
 struct MemoryFrame {
     int processNumber;
     int pageNumber;
+    long timestamp;
 };
 
 int main(int argc, char **argv) {
@@ -28,6 +29,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < memFrames; i++) {
         memory[i].processNumber = -1;
         memory[i].pageNumber = -1;
+        memory[i].timestamp = -1;
     }
 
     std::ifstream inputFile(argv[2]);
