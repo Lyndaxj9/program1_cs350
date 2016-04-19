@@ -2,14 +2,13 @@
 #include <fstream>
 #include <stdlib.h>
 #include <sstream>
-#include <climits>
 
 #include "Process.h"
 
 struct MemoryFrame {
 	int processNumber;
 	int pageNumber;
-	long timestamp;
+	unsigned long long timestamp;
 };
 
 int main(int argc, char **argv) {
@@ -61,7 +60,7 @@ int main(int argc, char **argv) {
 	int virtualPageNum;
 
 	int diskUsageCounter = 0;
-	long time = 0;
+	unsigned long long time = 0;
 	while (getline(inputFile, line)) {
 		std::stringstream ss(line);
 		ss >> command >> processNum;
@@ -93,9 +92,7 @@ int main(int argc, char **argv) {
 				// Regular LRU Algorithm
 				if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
 					if (memSize == memFrames) {
-
-
-						long timeIter = LONG_MAX;
+						unsigned long long timeIter = -1;
 						int memAddress = 0;
 						for(int i = 0; i < memFrames; i++)
 						{
@@ -177,7 +174,7 @@ int main(int argc, char **argv) {
 						}
 						for(int x = 0; x < pagesAbove; x++)
 						{
-							long timeIter = LONG_MAX;
+							unsigned long long timeIter = -1;
 							int memAddress = 0;
 							for(int i = 0; i < memFrames; i++)
 							{
@@ -189,7 +186,6 @@ int main(int argc, char **argv) {
 							}
 							int tempProc = test2_memory[memAddress].processNumber;
 							int tempPage = test2_memory[memAddress].pageNumber;
-							//std::cout << "Page Fault " << test2_pageFaults <<", replacing these: " << tempProc << " " << tempPage << std::endl;
 
 							test2_memory[memAddress].processNumber = processNum;
 							test2_memory[memAddress].pageNumber = virtualPageNum+x;
@@ -204,12 +200,9 @@ int main(int argc, char **argv) {
 							}
 						}
 
-
-
 						test2_pageFaults++;
 						std::cout << "Page Fault, memory full: " << line << std::endl;
 					} else {
-
 						if((memFrames - test2_memSize) > 4)
 						{
 							int pagesAbove = 4;
@@ -262,9 +255,6 @@ int main(int argc, char **argv) {
 							}
 
 						}
-						// not at capacity, just put it into memory
-
-
 						std::cout << "No fault, space in memory: " << line << std::endl;
 						test2_memSize++;
 					}
