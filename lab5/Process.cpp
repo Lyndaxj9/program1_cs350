@@ -1,9 +1,12 @@
 #include "Process.h"
+#include <time.h>
+#include <stdlib.h>
 
 Process::Process() {
     processNumber = -1;
     addressSpaceSize = 0;
     pages = new int[0];
+    pagesInMemory = -1;
 }
 
 Process::Process(int pNum, int size) {
@@ -13,6 +16,7 @@ Process::Process(int pNum, int size) {
     for (int i = 0; i < size; i++) {
         pages[i] = -1;
     }
+    pagesInMemory = 0;
 }
 
 Process::~Process() {
@@ -47,6 +51,27 @@ int Process::getPageLocation(int pageNum) {
     return pages[pageNum];
 }
 
+int Process::getRandomPage() {
+    srand(time(NULL));
+    int randPage = (rand() % pagesInMemory);
+    int pageCounter = 0;
+    int ret = -1;
+    for (int i = 0; i < addressSpaceSize; i++) {
+        if (pages[i] != -1) {
+            pageCounter++;
+        }
+        if (pageCounter == randPage) {
+            ret = pages[i];
+        }
+    }
+    return ret;
+}
+
 void Process::setPageLocation(int pageNum, int loc) {
     pages[pageNum] = loc;
+    if (loc == -1) {
+        pagesInMemory--;
+    } else {
+        pagesInMemory++;
+    }
 }

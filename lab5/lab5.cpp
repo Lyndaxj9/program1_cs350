@@ -2,13 +2,14 @@
 #include <fstream>
 #include <stdlib.h>
 #include <sstream>
+#include <limits.h>
 
 #include "Process.h"
 
 struct MemoryFrame {
     int processNumber;
     int pageNumber;
-    long timestamp;
+    unsigned long long timestamp;
 };
 
 int main(int argc, char **argv) {
@@ -60,7 +61,7 @@ int main(int argc, char **argv) {
     int virtualPageNum;
 
     int diskUsageCounter = 0;
-    long time = 0;
+    unsigned long long time = 0;
     while (getline(inputFile, line)) {
         std::stringstream ss(line);
         ss >> command >> processNum;
@@ -148,6 +149,8 @@ int main(int argc, char **argv) {
                         // ******************************
                         // ADD REPLACEMENT ALGORITHM HERE
                         // ******************************
+                        
+
                         test2_pageFaults++;
                         std::cout << "Page Fault, memory full: " << line << std::endl;
                     } else {
@@ -171,10 +174,35 @@ int main(int argc, char **argv) {
                 if (test3_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (test3_memSize == memFrames) {
                         // memory is at capacity, need to replace here
-                        // ******************************
-                        // ADD REPLACEMENT ALGORITHM HERE
-                        // ******************************
-                        test3_pageFaults++;
+                        int randomPage = test3_disk[found].getRandomPage();
+                        if (randomPage == -1) { // process has no pages in memory, regular LRU
+                            // find least recently used
+                            unsigned long long leastRecentlyUsed = -1;
+                            int memAddress = -1;
+                            for (int i = 0; i < memFrames; i++) {
+                                if (test3_memory[i].timestamp < leastRecentlyUsed) {
+                                    test3_memory[i].timestamp = leastRecentlyUsed;
+                                    memAddress = i;
+                                }
+                            }
+
+                            // Old Process in memory, to be replaced
+                            int removeProcessNum = test3_memory[memAddress].processNumber;
+                            int removeProcessPage = test3_memory[memAddress].pageNumber;
+
+                            // Replace with new process reference
+                            test3_memory[memAddress].processNumber = processNum;
+                            test3_memory[memAddress].pageNumber = virtualPageNum;
+                            test3_memory[memAddress].timestamp = time;
+                            test3_disk[found].setPageLocation(found, virtualPageNum);
+
+                            // Set invalid/valid bit to -1 in old process
+                            for (int i = 0; i < diskUsageCounter; i++) {
+                                if (test3_disk[i].getProcessNumber() == removeProcessNum) {
+                                    test3_disk[i].setPageLocation(removeProcessPage, -1);
+                                }
+                            }
+                        }
                         std::cout << "Page Fault, memory full: " << line << std::endl;
                     } else {
                         // not at capacity, just put it into memory
