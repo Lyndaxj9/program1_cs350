@@ -223,7 +223,7 @@ int main(int argc, char **argv) {
 				//Algorithm 2
 				if (test2_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
 					if (test2_memSize == memFrames) {
-						int pagesAbove = 0;
+						int pagesAbove = 4;
 						if(((test2_disk[found].getSize()-1) - virtualPageNum) < 4)
 						{
 							pagesAbove = (test2_disk[found].getSize()-1) - virtualPageNum;
