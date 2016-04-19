@@ -99,6 +99,23 @@ void Linklist::eraseAndAddFront(Node * tmp)
 }
 
 
+void Linklist::removeBack()
+{
+	Node * iter = getHead();
+	while(iter->getNext()->getNext() !=NULL)
+	{
+		iter = iter->getNext();
+	}
+	setTail(iter);
+	iter->setNext(NULL);
+}
+Node * Linklist::eraseBack()
+{
+	return getTail();
+	removeBack();
+}
+
+
 
 
 

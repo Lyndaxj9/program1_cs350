@@ -21,12 +21,12 @@ void Lru::hitPage(int page, int proc)
 
 int Lru::getLruProc()
 {
-	Procs.getTail();
+	Procs.eraseBack()->getValue();
 }
 
 int Lru::getLruPage(int proc)
 {
-	Map[proc].getTail();
+	Map[proc].eraseBack()->getValue();
 }
 
 int Lru::hitNewPage(int page, int proc)

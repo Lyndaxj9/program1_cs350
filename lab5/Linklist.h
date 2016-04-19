@@ -19,7 +19,9 @@ class Linklist{
 		void setTail(Node * tmp);
 		void addFront(Node * tmp);
 		void addBack(Node * tmp);
+		void removeBack();
 		int Find(int value);
 		void eraseAndAddFront(Node * tmp);
+		Node * eraseBack();
 };
 #endif
