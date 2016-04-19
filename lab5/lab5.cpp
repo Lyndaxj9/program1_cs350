@@ -365,6 +365,11 @@ int main(int argc, char **argv) {
     std::cout << "Page Fault Amount: " << pageFaults << std::endl;
     std::cout << "Total Page References: " << totalReferences << std::endl;
 
+
+    std::cout << "\nAlgorithm 1 Results:" << std::endl;
+    std::cout << "Page Fault Amount: " << test1_pageFaults << std::endl;
+    std::cout << "Total Page References: " << totalReferences << std::endl;
+
     std::cout << "\nAlgorithm 3 Results:" << std::endl;
     std::cout << "Page Fault Amount: " << test3_pageFaults << std::endl;
     std::cout << "Total Page References: " << totalReferences << std::endl;
