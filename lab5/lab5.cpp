@@ -93,7 +93,6 @@ int main(int argc, char **argv) {
                 // Regular LRU Algorithm
                 if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (memSize == memFrames) {
-<<<<<<< HEAD
 
 
 						long timeIter = LONG_MAX;
@@ -111,25 +110,25 @@ int main(int argc, char **argv) {
 						
 						memory[memAddress].processNumber = processNum;
 						memory[memAddress].pageNumber = virtualPageNum;
-						memory[memAddress].timeStamp = 
+						memory[memAddress].timestamp = time; 
 						disk[found].setPageLocation(virtualPageNum, memAddress);
+						for(int i =0; i<diskUsageCounter; i++)
+						{
+							if(disk[i].getProcessNumber() == tempProc)
+							{
+								disk[i].setPageLocation(tempPage, -1);
+							}
+						}
 
                         //pageFaults++;
                         std::cout << "Page Fault, memory full " << line << " Kicking out " << tempProc << " " << tempPage << std::endl;
-=======
-                        // memory is at capacity, need to replace here
-                        // ******************************
-                        // ADD REPLACEMENT ALGORITHM HERE
-                        // ******************************
-                        pageFaults++;
-                        std::cout << "Page Fault, memory full: " << line << std::endl;
->>>>>>> bfce342e5eb36a5c0f3537e8e697902c955b220c
                     } else {
                         // not at capacity, just put it into memory
                         for (int i = 0; i < memFrames; i++) {
                             if (memory[i].processNumber == -1) {
                                 memory[i].processNumber = processNum;
                                 memory[i].pageNumber = virtualPageNum;
+								memory[i].timestamp = time;
                                 disk[found].setPageLocation(virtualPageNum, i);
                                 break;
                             }
