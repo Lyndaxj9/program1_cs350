@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <sstream>
+#include <limits>
 
 #include "Process.h"
 
@@ -122,6 +123,27 @@ int main(int argc, char **argv) {
                         // ******************************
                         // ADD REPLACEMENT ALGORITHM HERE
                         // ******************************
+                        // look for process in disk
+                        for(int i = 0; i < diskUsageCounter; i++){
+                          // if the process is found go in and start looking for min page
+                          if (disk[i].getProcessNumber() == processNum){
+                            // set minTime to infinity to be able to compare to timestamp
+                            double minTime = std::numeric_limits<double>::infinity();
+                            int mintimeLoc = -1;
+                            int minPage = -1;
+                            // go through the process's address space and look thru all pages
+                            for (int j = 0; j < disk[i].getProcessSize(); j++){
+                              // if the page is in memory then compare timestamps
+                              if (disk[i].getPageLocation(j) != -1){
+                                if (test1_memory[disk[i].getPageLocation(j)].timestamp < minTime){
+                                  minTime = test1_memory[disk[i].getPageLocation(j)].timestamp;
+                                  mintimeLoc = disk[i].getPageLocation(j);
+                                  minPage = j;
+                                }
+                              }
+                            }
+                          }
+                        }
                         test1_pageFaults++;
                         std::cout << "Page Fault, memory full: " << line << std::endl;
                     } else {
