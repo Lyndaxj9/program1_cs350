@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <sstream>
+#include <limits>
 
 #include "Process.h"
 
@@ -138,31 +139,86 @@ int main(int argc, char **argv) {
 					std::cout << "No fault, already exists in memory: " << line << std::endl;
 				}
 
-				//Algorithm 1
-				if (test1_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
-					if (test1_memSize == memFrames) {
-						// memory is at capacity, need to replace here
-						// ******************************
-						// ADD REPLACEMENT ALGORITHM HERE
-						// ******************************
-						test1_pageFaults++;
-						std::cout << "Page Fault, memory full: " << line << std::endl;
-					} else {
-						// not at capacity, just put it into memory
-						for (int i = 0; i < memFrames; i++) {
-							if (test1_memory[i].processNumber == -1) {
-								test1_memory[i].processNumber = processNum;
-								test1_memory[i].pageNumber = virtualPageNum;
-								test1_disk[found].setPageLocation(virtualPageNum, i);
-								break;
-							}
-						}
-						std::cout << "No fault, space in memory: " << line << std::endl;
-						test1_memSize++;
-					}
-				} else {
-					std::cout << "No fault, already exists in memory: " << line << std::endl;
-				}
+                //Algorithm 1 - LRU w/in the ref'd process's own pages
+                // if (test1_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
+                //     if (test1_memSize == memFrames) {
+                //         // memory is at capacity, need to replace here
+                //         // ******************************
+                //         // ADD REPLACEMENT ALGORITHM HERE
+                //         // ******************************
+                //         // look for process in disk - process was already found in disk?
+                //         //for(int i = 0; i < diskUsageCounter; i++){
+                //           // if the process is found go in and start looking for min page
+                //           if (test1_disk[found].getProcessNumber() == processNum){
+                //             // set minTime to infinity to be able to compare to timestamp
+                //             double minTime = std::numeric_limits<double>::infinity();
+                //             int mintimeLoc = -1;
+                //             int minPage = -1;
+                //             int notEmpty = 0;
+                //             int minProc = -1;
+                //             // go through the process's address space and look thru all pages
+                //             for (int j = 0; j < test1_disk[found].getProcessSize(); j++){
+                //               notEmpty = 1;
+                //               // if the page is in memory then compare timestamps
+                //               if (test1_disk[found].getPageLocation(j) != -1){
+                //                 if (test1_memory[test1_disk[found].getPageLocation(j)].timestamp < minTime){
+                //                   minTime = test1_memory[test1_disk[found].getPageLocation(j)].timestamp;
+                //                   mintimeLoc = test1_disk[found].getPageLocation(j);
+                //                   minPage = j;
+                //                 }
+                //               }
+                //             }
+                //             if (notEmpty == 1){
+                //               // the process has pages in memory and the lru page get's replaced
+                //               test1_memory[mintimeLoc].processNumber = processNum;
+                //               test1_memory[mintimeLoc].pageNumber = virtualPageNum;
+                //               test1_memory[mintimeLoc].timestamp = time;
+                //               test1_disk[found].setPageLocation(virtualPageNum, mintimeLoc);
+                //               test1_disk[found].setPageLocation(minPage, -1);
+                //             } else {
+                //               // regular lru
+                //                 for (int j = 0; j < test1_memSize; j++) {
+                //                   if (test1_memory[j].timestamp < minTime) {
+                //                     minTime = test1_memory[j].timestamp;
+                //                     mintimeLoc = j;
+                //                   }
+                //                 }
+
+                //                 minProc = test1_memory[mintimeLoc].processNumber;
+                //                 minPage = test1_memory[mintimeLoc].pageNumber;
+
+                //                 test1_memory[mintimeLoc].processNumber = processNum;
+                //                 test1_memory[mintimeLoc].pageNumber = virtualPageNum;
+                //                 test1_memory[mintimeLoc].timestamp = time;
+                //                 test1_disk[found].setPageLocation(virtualPageNum, mintimeLoc);
+                //                 
+                //                 for (int i = 0; i < diskUsageCounter; i++) {
+                //                   if (test1_disk[i].getProcessNumber() == minProc){
+                //                     test1_disk[i].setPageLocation(minPage, -1);
+                //                   }
+                //                 }
+                //             }
+                //           }
+                //         //}
+                //         test1_pageFaults++;
+                //         std::cout << "Page Fault, memory full: " << line << std::endl;
+                //     } else {
+                //         // not at capacity, just put it into memory
+                //         for (int i = 0; i < memFrames; i++) {
+                //             if (test1_memory[i].processNumber == -1) {
+                //                 test1_memory[i].processNumber = processNum;
+                //                 test1_memory[i].pageNumber = virtualPageNum;
+                //                 test1_disk[found].setPageLocation(virtualPageNum, i);
+                //                 break;
+                //             }
+                //         }
+                //         std::cout << "No fault, space in memory: " << line << std::endl;
+                //         test1_memSize++;
+                //     }
+                // } else {
+                //     std::cout << "No fault, already exists in memory: " << line << std::endl;
+                // }
+
 
 				//Algorithm 2
 				if (test2_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
@@ -262,31 +318,6 @@ int main(int argc, char **argv) {
 					std::cout << "No fault, already exists in memory: " << line << std::endl;
 				}
 
-				//Algorithm 3
-				if (test3_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
-					if (test3_memSize == memFrames) {
-						// memory is at capacity, need to replace here
-						// ******************************
-						// ADD REPLACEMENT ALGORITHM HERE
-						// ******************************
-						test3_pageFaults++;
-						std::cout << "Page Fault, memory full: " << line << std::endl;
-					} else {
-						// not at capacity, just put it into memory
-						for (int i = 0; i < memFrames; i++) {
-							if (test3_memory[i].processNumber == -1) {
-								test3_memory[i].processNumber = processNum;
-								test3_memory[i].pageNumber = virtualPageNum;
-								test3_disk[found].setPageLocation(virtualPageNum, i);
-								break;
-							}
-						}
-						std::cout << "No fault, space in memory: " << line << std::endl;
-						test3_memSize++;
-					}
-				} else {
-					std::cout << "No fault, already exists in memory: " << line << std::endl;
-				}
 
 				time++;
 			} else {
