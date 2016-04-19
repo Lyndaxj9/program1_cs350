@@ -5,7 +5,7 @@
 Process::Process() {
     processNumber = -1;
     addressSpaceSize = 0;
-    pages = new int[0];
+    pages = NULL;
     pagesInMemory = -1;
 }
 
@@ -26,7 +26,7 @@ Process::~Process() {
 Process & Process::operator=(const Process &rhs) {
     processNumber = rhs.processNumber;
     addressSpaceSize = rhs.addressSpaceSize;
-    delete [] pages;
+    if (pages != NULL) delete [] pages;
     pages = new int[addressSpaceSize];
     for (int i = 0; i < addressSpaceSize; i++) {
         pages[i] = rhs.pages[i];
@@ -71,10 +71,15 @@ int Process::getRandomPage() {
 }
 
 void Process::setPageLocation(int pageNum, int loc) {
-    pages[pageNum] = loc;
+    pages[pageNum-1] = loc;
     if (loc == -1) {
         pagesInMemory--;
     } else {
         pagesInMemory++;
     }
+}
+
+int Process::getSize()
+{
+	return addressSpaceSize;
 }

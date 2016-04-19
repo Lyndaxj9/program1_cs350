@@ -22,6 +22,7 @@ class Process {
         int getPageLocation(int pageNum);
         int getRandomPage();
         void setPageLocation(int pageNum, int loc);
+		int getSize();
 };
 
 #endif
