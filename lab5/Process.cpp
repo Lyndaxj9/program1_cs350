@@ -50,3 +50,8 @@ int Process::getPageLocation(int pageNum) {
 void Process::setPageLocation(int pageNum, int loc) {
     pages[pageNum] = loc;
 }
+
+int Process::getSize()
+{
+	return addressSpaceSize;
+}

@@ -20,6 +20,7 @@ class Process {
 
         int getPageLocation(int pageNum);
         void setPageLocation(int pageNum, int loc);
+		int getSize();
 };
 
 #endif
