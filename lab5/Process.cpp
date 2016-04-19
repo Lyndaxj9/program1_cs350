@@ -48,7 +48,8 @@ int * Process::getPages() {
 }
 
 int Process::getPageLocation(int pageNum) {
-    return pages[pageNum];
+    // pageNum reference generations start at 1
+    return pages[pageNum-1];
 }
 
 int Process::getRandomPage() {
