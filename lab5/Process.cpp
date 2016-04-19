@@ -78,3 +78,8 @@ void Process::setPageLocation(int pageNum, int loc) {
         pagesInMemory++;
     }
 }
+
+int Process::getSize()
+{
+	return addressSpaceSize;
+}
