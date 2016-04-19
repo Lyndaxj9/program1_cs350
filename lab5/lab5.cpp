@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <sstream>
+#include <climits>
 
 #include "Process.h"
 
@@ -70,12 +71,28 @@ int main(int argc, char **argv) {
             if (found != -1) {
                 if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (memSize == memFrames) {
-                        // memory is at capacity
-                        // ******************************
-                        // ADD REPLACEMENT ALGORITHM HERE
-                        // ******************************
-                        pageFaults++;
-                        std::cout << "Page Fault, memory full: " << line << std::endl;
+
+
+						long timeIter = LONG_MAX;
+						int memAddress = 0;
+						for(int i = 0; i < memFrames; i++)
+						{
+							if(memory[i].timestamp < timeIter)
+							{
+								timeIter = memory[i].timestamp;
+								memAddress = i;
+							}
+						}
+						int tempProc = memory[memAddress].processNumber;
+						int tempPage = memory[memAddress].pageNumber;
+						
+						memory[memAddress].processNumber = processNum;
+						memory[memAddress].pageNumber = virtualPageNum;
+						memory[memAddress].timeStamp = 
+						disk[found].setPageLocation(virtualPageNum, memAddress);
+
+                        //pageFaults++;
+                        std::cout << "Page Fault, memory full " << line << " Kicking out " << tempProc << " " << tempPage << std::endl;
                     } else {
                         // page replacement
                         for (int i = 0; i < memFrames; i++) {
@@ -90,6 +107,7 @@ int main(int argc, char **argv) {
                         memSize++;
                     }
                 } else {
+					memory[disk[found].getPageLocation(virtualPageNum)].timestamp = time;
                     std::cout << "No fault, already exists in memory: " << line << std::endl;
                 }
             } else {
