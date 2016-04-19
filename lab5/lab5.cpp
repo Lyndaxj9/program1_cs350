@@ -35,6 +35,11 @@ int main(int argc, char **argv) {
     int test1_memSize = 0;
     int test2_memSize = 0;
     int test3_memSize = 0;
+    int pageFaults = 0;
+    int test1_pageFaults = 0;
+    int test2_pageFaults = 0;
+    int test3_pageFaults = 0;
+    int totalReferences = 0;
     for (int i = 0; i < memFrames; i++) {
         memory[i].processNumber = -1; memory[i].pageNumber = -1; memory[i].timestamp = -1;
         test1_memory[i].processNumber = -1; test1_memory[i].pageNumber = -1; test1_memory[i].timestamp = -1;
@@ -55,7 +60,6 @@ int main(int argc, char **argv) {
     int virtualPageNum;
 
     int diskUsageCounter = 0;
-    int pageFaults = 0;
     long time = 0;
     while (getline(inputFile, line)) {
         std::stringstream ss(line);
@@ -85,6 +89,7 @@ int main(int argc, char **argv) {
             }
 
             if (found != -1) {
+                // Regular LRU Algorithm
                 if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (memSize == memFrames) {
                         // memory is at capacity, need to replace here
@@ -109,6 +114,86 @@ int main(int argc, char **argv) {
                 } else {
                     std::cout << "No fault, already exists in memory: " << line << std::endl;
                 }
+
+                //Algorithm 1
+                if (test1_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
+                    if (test1_memSize == memFrames) {
+                        // memory is at capacity, need to replace here
+                        // ******************************
+                        // ADD REPLACEMENT ALGORITHM HERE
+                        // ******************************
+                        test1_pageFaults++;
+                        std::cout << "Page Fault, memory full: " << line << std::endl;
+                    } else {
+                        // not at capacity, just put it into memory
+                        for (int i = 0; i < memFrames; i++) {
+                            if (test1_memory[i].processNumber == -1) {
+                                test1_memory[i].processNumber = processNum;
+                                test1_memory[i].pageNumber = virtualPageNum;
+                                test1_disk[found].setPageLocation(virtualPageNum, i);
+                                break;
+                            }
+                        }
+                        std::cout << "No fault, space in memory: " << line << std::endl;
+                        test1_memSize++;
+                    }
+                } else {
+                    std::cout << "No fault, already exists in memory: " << line << std::endl;
+                }
+
+                //Algorithm 2
+                if (test2_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
+                    if (test2_memSize == memFrames) {
+                        // memory is at capacity, need to replace here
+                        // ******************************
+                        // ADD REPLACEMENT ALGORITHM HERE
+                        // ******************************
+                        test2_pageFaults++;
+                        std::cout << "Page Fault, memory full: " << line << std::endl;
+                    } else {
+                        // not at capacity, just put it into memory
+                        for (int i = 0; i < memFrames; i++) {
+                            if (test2_memory[i].processNumber == -1) {
+                                test2_memory[i].processNumber = processNum;
+                                test2_memory[i].pageNumber = virtualPageNum;
+                                test2_disk[found].setPageLocation(virtualPageNum, i);
+                                break;
+                            }
+                        }
+                        std::cout << "No fault, space in memory: " << line << std::endl;
+                        test2_memSize++;
+                    }
+                } else {
+                    std::cout << "No fault, already exists in memory: " << line << std::endl;
+                }
+
+                //Algorithm 3
+                if (test3_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
+                    if (test3_memSize == memFrames) {
+                        // memory is at capacity, need to replace here
+                        // ******************************
+                        // ADD REPLACEMENT ALGORITHM HERE
+                        // ******************************
+                        test3_pageFaults++;
+                        std::cout << "Page Fault, memory full: " << line << std::endl;
+                    } else {
+                        // not at capacity, just put it into memory
+                        for (int i = 0; i < memFrames; i++) {
+                            if (test3_memory[i].processNumber == -1) {
+                                test3_memory[i].processNumber = processNum;
+                                test3_memory[i].pageNumber = virtualPageNum;
+                                test3_disk[found].setPageLocation(virtualPageNum, i);
+                                break;
+                            }
+                        }
+                        std::cout << "No fault, space in memory: " << line << std::endl;
+                        test3_memSize++;
+                    }
+                } else {
+                    std::cout << "No fault, already exists in memory: " << line << std::endl;
+                }
+
+                time++;
             } else {
                 std::cout << "Invalid: " << line << std::endl;
             }
@@ -132,17 +217,17 @@ int main(int argc, char **argv) {
                     if (test1_memory[i].processNumber == processNum) {
                         test1_memory[i].processNumber = -1;
                         test1_memory[i].pageNumber = -1;
-                        memSize--;
+                        test1_memSize--;
                     }
                     if (test2_memory[i].processNumber == processNum) {
                         test2_memory[i].processNumber = -1;
                         test2_memory[i].pageNumber = -1;
-                        memSize--;
+                        test2_memSize--;
                     }
                     if (test3_memory[i].processNumber == processNum) {
                         test3_memory[i].processNumber = -1;
                         test3_memory[i].pageNumber = -1;
-                        memSize--;
+                        test3_memSize--;
                     }
                 }
 
