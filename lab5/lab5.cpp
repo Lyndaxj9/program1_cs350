@@ -24,12 +24,19 @@ int main(int argc, char **argv) {
     }
 
     Process disk[5000];
+    Process test1_disk[5000];
+    Process test2_disk[5000];
+    Process test3_disk[5000];
     MemoryFrame * memory = new MemoryFrame[memFrames];
+    MemoryFrame * test1_memory = new MemoryFrame[memFrames];
+    MemoryFrame * test2_memory = new MemoryFrame[memFrames];
+    MemoryFrame * test3_memory = new MemoryFrame[memFrames];
     int memSize = 0;
     for (int i = 0; i < memFrames; i++) {
-        memory[i].processNumber = -1;
-        memory[i].pageNumber = -1;
-        memory[i].timestamp = -1;
+        memory[i].processNumber = -1; memory[i].pageNumber = -1; memory[i].timestamp = -1;
+        test1_memory[i].processNumber = -1; test1_memory[i].pageNumber = -1; test1_memory[i].timestamp = -1;
+        test2_memory[i].processNumber = -1; test2_memory[i].pageNumber = -1; test2_memory[i].timestamp = -1;
+        test3_memory[i].processNumber = -1; test3_memory[i].pageNumber = -1; test3_memory[i].timestamp = -1;
     }
 
     std::ifstream inputFile(argv[2]);
@@ -46,6 +53,7 @@ int main(int argc, char **argv) {
 
     int diskUsageCounter = 0;
     int pageFaults = 0;
+    long time = 0;
     while (getline(inputFile, line)) {
         std::stringstream ss(line);
         ss >> command >> processNum;
@@ -137,5 +145,8 @@ int main(int argc, char **argv) {
     // }
 
     delete [] memory;
+    delete [] test1_memory;
+    delete [] test2_memory;
+    delete [] test3_memory;
     return 0;
 }
