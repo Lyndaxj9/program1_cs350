@@ -6,6 +6,7 @@ class Process {
         int processNumber;
         int addressSpaceSize;
         int * pages;
+        int pagesInMemory;
 
     public:
         Process();
@@ -19,6 +20,7 @@ class Process {
         int * getPages();
 
         int getPageLocation(int pageNum);
+        int getRandomPage();
         void setPageLocation(int pageNum, int loc);
 };
 
