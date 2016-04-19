@@ -1,75 +1,52 @@
-//Process.cpp
-#include <iostream>
 #include "Process.h"
-using namespace std;
 
-Process::Process(){
-    pNum = -1;
-    size = 0;
+Process::Process() {
+    processNumber = -1;
+    addressSpaceSize = 0;
     pages = new int[0];
-    location = new int[0];
 }
 
-Process::Process(int pid, int sizeN){
-    pNum = pid;
-    size = sizeN;
+Process::Process(int pNum, int size) {
+    processNumber = pNum;
+    addressSpaceSize = size;
     pages = new int[size];
-    location = new int[size];
-    for(int i = 0; i<size; i++){
-        pages[i] = 0;
+    for (int i = 0; i < size; i++) {
+        pages[i] = -1;
     }
 }
 
-Process::~Process(){
-    delete[] pages;
-    delete[] location;
+Process::~Process() {
+    delete [] pages;
 }
 
-Process::Process(const Process &rhs){
-    pNum = rhs.pNum;
-    size = rhs.size;
-    pages = new int[size];
-    location = new int[size];
-}
-
-Process& Process::operator=(const Process &rhs){
-    if(this != &rhs){
-        pNum = rhs.pNum;
-        size = rhs.size;
-        //delete[] this->pages;
-        int* temp = new int[size];
-        int* tmp = new int[size];
-        delete[] pages;
-        delete[] location;
-        //this->pages = new int[this->size];
-        pages = temp;
-        location = tmp;
-        //delete temp;
+Process & Process::operator=(const Process &rhs) {
+    processNumber = rhs.processNumber;
+    addressSpaceSize = rhs.addressSpaceSize;
+    delete [] pages;
+    pages = new int[addressSpaceSize];
+    for (int i = 0; i < addressSpaceSize; i++) {
+        pages[i] = rhs.pages[i];
     }
 
     return *this;
 }
 
-int Process::getPnum(){
-    return pNum;
+int Process::getProcessNumber() {
+    return processNumber;
 }
 
-int* Process::getAddrsp(){
+int Process::getProcessSize() {
+    return addressSpaceSize;
+}
+
+int * Process::getPages() {
     return pages;
 }
 
-void Process::setValid(int pgN){
-    pages[pgN] = 1;
+int Process::getPageLocation(int pageNum) {
+    return pages[pageNum];
 }
 
-void Process::setInvalid(int pgN){
-    pages[pgN] = 0;
-}
-
-int Process::getPgStat(int pgN){
-    return pages[pgN];
-}
-
-void Process::setLocation(int pgN, int loc){
-    location[pgN] = loc;
+void Process::setPageLocation(int pageNum, int loc) {
+    pages[pageNum] = loc;
 }

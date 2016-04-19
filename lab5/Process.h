@@ -1,25 +1,25 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
-class Process{
+class Process {
     private:
-        int pNum;
-        int size;
-        int* pages;
-        int* location;
+        int processNumber;
+        int addressSpaceSize;
+        int * pages;
 
     public:
         Process();
-        Process(int pid, int sizeN);
+        Process(int pNum, int size);
         ~Process();
-        Process (const Process &rhs);
-        Process& operator=(const Process &rhs);
-        int getPnum();
-        int* getAddrsp();
-        void setValid(int pgN);
-        void setInvalid(int pgN);        
-        int getPgStat(int pgN);
-        void setLocation(int pgN, int loc);
+
+        Process & operator=(const Process &rhs);
+
+        int getProcessNumber();
+        int getProcessSize();
+        int * getPages();
+
+        int getPageLocation(int pageNum);
+        void setPageLocation(int pageNum, int loc);
 };
 
 #endif
