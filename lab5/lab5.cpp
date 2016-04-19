@@ -346,17 +346,18 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	// std::cout << "Printing Disk Contents:" << std::endl;
-	// for (int i = 0; i < diskUsageCounter; i++) {
-	//     std::cout << "PROCESS " << disk[i].getProcessNumber() 
-	//         << ", SIZE: " << disk[i].getProcessSize() << std::endl;
-	// }
-	// 
-	// std::cout << "Printing Memory Contents:" << std::endl;
-	// for (int i = 0; i < memFrames; i++) {
-	//     std::cout << i << " PROCESS " << memory[i].processNumber
-	//         << ", PAGE #: " << memory[i].pageNumber << std::endl;
-	// }
+    std::cout << "\nLRU Results:" << std::endl;
+    std::cout << "Page Fault Amount: " << pageFaults << std::endl;
+    std::cout << "Total Page References: " << totalReferences << std::endl;
+
+
+    std::cout << "\nAlgorithm 1 Results:" << std::endl;
+    std::cout << "Page Fault Amount: " << test1_pageFaults << std::endl;
+    std::cout << "Total Page References: " << totalReferences << std::endl;
+
+    std::cout << "\nAlgorithm 3 Results:" << std::endl;
+    std::cout << "Page Fault Amount: " << test3_pageFaults << std::endl;
+    std::cout << "Total Page References: " << totalReferences << std::endl;
 
 	delete [] memory;
 	delete [] test1_memory;
