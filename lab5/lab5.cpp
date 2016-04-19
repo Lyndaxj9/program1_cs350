@@ -92,8 +92,6 @@ int main(int argc, char **argv) {
                 // Regular LRU Algorithm
                 if (disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (memSize == memFrames) {
-
-
 						unsigned long long timeIter = -1;
 						int memAddress = 0;
 						for(int i = 0; i < memFrames; i++)
@@ -111,6 +109,7 @@ int main(int argc, char **argv) {
 						memory[memAddress].pageNumber = virtualPageNum;
 						memory[memAddress].timestamp = time; 
 						disk[found].setPageLocation(virtualPageNum, memAddress);
+
 						for(int i =0; i<diskUsageCounter; i++)
 						{
 							if(disk[i].getProcessNumber() == tempProc)
@@ -119,8 +118,8 @@ int main(int argc, char **argv) {
 							}
 						}
 
-                        //pageFaults++;
-                        std::cout << "Page Fault, memory full " << line << " Kicking out " << tempProc << " " << tempPage << std::endl;
+                        pageFaults++;
+                        // std::cout << "Page Fault, memory full " << line << " Kicking out " << tempProc << " " << tempPage << std::endl;
                     } else {
                         // not at capacity, just put it into memory
                         for (int i = 0; i < memFrames; i++) {
@@ -211,8 +210,8 @@ int main(int argc, char **argv) {
                             }
 
                             // Old Process in memory, to be replaced
-                            int removeProcessNum = test3_memory[memAddress].processNumber;
-                            int removeProcessPage = test3_memory[memAddress].pageNumber;
+                            int oldProcessNum = test3_memory[memAddress].processNumber;
+                            int oldPageNum = test3_memory[memAddress].pageNumber;
 
                             // Replace with new process reference
                             test3_memory[memAddress].processNumber = processNum;
@@ -222,11 +221,24 @@ int main(int argc, char **argv) {
 
                             // Set invalid/valid bit to -1 in old process
                             for (int i = 0; i < diskUsageCounter; i++) {
-                                if (test3_disk[i].getProcessNumber() == removeProcessNum) {
-                                    test3_disk[i].setPageLocation(removeProcessPage, -1);
+                                if (test3_disk[i].getProcessNumber() == oldProcessNum) {
+                                    test3_disk[i].setPageLocation(oldPageNum, -1);
+                                }
+                            }
+                        } else {
+                            int oldProcessNum = test3_memory[randomPage].processNumber;
+                            int oldPageNum = test3_memory[randomPage].pageNumber;
+                            test3_memory[randomPage].processNumber = processNum;
+                            test3_memory[randomPage].pageNumber = virtualPageNum;
+                            test3_memory[randomPage].timestamp = time;
+
+                            for (int i = 0; i < diskUsageCounter; i++) {
+                                if (test3_disk[i].getProcessNumber() == oldProcessNum) {
+                                    test3_disk[i].setPageLocation(oldPageNum, -1);
                                 }
                             }
                         }
+                        test3_pageFaults++;
                         std::cout << "Page Fault, memory full: " << line << std::endl;
                     } else {
                         // not at capacity, just put it into memory
@@ -246,6 +258,7 @@ int main(int argc, char **argv) {
                 }
 
                 time++;
+                totalReferences++;
             } else {
                 std::cout << "Invalid: " << line << std::endl;
             }
@@ -293,6 +306,10 @@ int main(int argc, char **argv) {
         }
     }
 
+    std::cout << "\nAlgorithm 3 Results:" << std::endl;
+    std::cout << "Page Fault Amount: " << test3_pageFaults << std::endl;
+    std::cout << "Total Page References: " << totalReferences << std::endl;
+
     // std::cout << "Printing Disk Contents:" << std::endl;
     // for (int i = 0; i < diskUsageCounter; i++) {
     //     std::cout << "PROCESS " << disk[i].getProcessNumber() 
@@ -305,9 +322,9 @@ int main(int argc, char **argv) {
     //         << ", PAGE #: " << memory[i].pageNumber << std::endl;
     // }
 
-    delete [] memory;
-    delete [] test1_memory;
-    delete [] test2_memory;
-    delete [] test3_memory;
+    // delete [] memory;
+    // delete [] test1_memory;
+    // delete [] test2_memory;
+    // delete [] test3_memory;
     return 0;
 }
