@@ -25,14 +25,13 @@ We tested our methods using different combinations of variables from lab4. The m
 ./lab5 2500 <input>
 
 RESULTS
-
-	Algorithm 2 performed better tham the pure LRU when locality was turned on, as was expected. When locality was turned off it performed much worse. Algorithms 1 and 3 performed generally the same as each other and a bit behind the pure LRU, while random page replacement always performed badly.
-
 -------
+Algorithm 2 performed better tham the pure LRU when locality was turned on, as was expected. When locality was turned off it performed much worse. Algorithms 1 and 3 performed generally the same as each other and a bit behind the pure LRU, while random page replacement always performed badly.
+
 
 CONCLUSION
-	Our results seem to indicate that pre-fetching is usually a good idea becuase locality will generally happen. However, questions remain about how many pages to prefetch, or if prefetching always works. A LRU page replacement strategy will always perform well however.
 ----------
+Our results seem to indicate that pre-fetching is usually a good idea becuase locality will generally happen. However, questions remain about how many pages to prefetch, or if prefetching always works. A LRU page replacement strategy will always perform well however.
 
 Test Cases:
 * w/ and w/o phasing
