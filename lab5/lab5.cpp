@@ -222,110 +222,11 @@ int main(int argc, char **argv) {
                     //std::cout << "No fault, already exists in memory: " << line << std::endl;
                 }
 
-
-                ////Algorithm 2
-                //if (test2_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
-                //    if (test2_memSize == memFrames) {
-                //        int pagesAbove = 50;
-                //        if(((test2_disk[found].getSize()-1) - virtualPageNum) < 4)
-                //        {
-                //            pagesAbove = (test2_disk[found].getSize()-1) - virtualPageNum;
-                //        }
-                //        for(int x = 0; x < pagesAbove; x++)
-                //        {
-                //            unsigned long long timeIter = -1;
-                //            int memAddress = 0;
-                //            for(int i = 0; i < memFrames; i++)
-                //            {
-                //                if(test2_memory[i].timestamp < timeIter)
-                //                {
-                //                    timeIter = test2_memory[i].timestamp;
-                //                    memAddress = i;
-                //                }
-                //            }
-                //            int tempProc = test2_memory[memAddress].processNumber;
-                //            int tempPage = test2_memory[memAddress].pageNumber;
-
-                //            test2_memory[memAddress].processNumber = processNum;
-                //            test2_memory[memAddress].pageNumber = virtualPageNum+x;
-                //            test2_memory[memAddress].timestamp = time; 
-                //            test2_disk[found].setPageLocation(virtualPageNum+x, memAddress);
-                //            for(int i =0; i<diskUsageCounter; i++)
-                //            {
-                //                if(test2_disk[i].getProcessNumber() == tempProc)
-                //                {
-                //                    test2_disk[i].setPageLocation(tempPage, -1);
-                //                }
-                //            }
-                //        }
-
-                //        test2_pageFaults++;
-                //        //std::cout << "Page Fault, memory full: " << line << std::endl;
-                //    } else {
-                //        if((memFrames - test2_memSize) > 4)
-                //        {
-                //            int pagesAbove = 50;
-                //            if(((test2_disk[found].getSize()-1) - virtualPageNum) < 4)
-                //            {
-                //                pagesAbove = (test2_disk[found].getSize()-1) - virtualPageNum;
-                //            }
-                //            bool done = false;
-                //            for (int i = 0; i < memFrames; i++) {
-                //                for(int x = 0; x < pagesAbove; x++)
-                //                {
-                //                    if (test2_memory[i].processNumber == -1) {
-                //                        done = true;
-                //                        //std::cout << " Adding new Page: " << virtualPageNum+x << std::endl;
-                //                        test2_memory[i].processNumber = processNum;
-                //                        test2_memory[i].pageNumber = virtualPageNum+x;
-                //                        test2_memory[i].timestamp = time;
-                //                        test2_disk[found].setPageLocation(virtualPageNum+x, i);
-                //                    }
-                //                }
-                //                if (done) break;
-                //            }
-
-                //        }
-                //        else
-                //        {
-                //            int pagesAbove = 50;
-                //            if(test2_disk[found].getSize() < 4)
-                //            {
-                //                pagesAbove = (test2_disk[found].getSize()-1) - virtualPageNum;
-                //            }
-                //            if(pagesAbove > (memFrames-test2_memSize))
-                //            {
-                //                pagesAbove = memFrames-test2_memSize;
-                //            }
-                //            bool done = false;
-                //            for (int i = 0; i < memFrames; i++) {
-                //                for(int x = 0; x < pagesAbove; x++)
-                //                {
-                //                    if (test2_memory[i].processNumber == -1) {
-                //                        done = true;
-                //                        //std::cout << " Adding new Page: " << virtualPageNum+x << std::endl;
-                //                        test2_memory[i].processNumber = processNum;
-                //                        test2_memory[i].pageNumber = virtualPageNum+x;
-                //                        test2_memory[i].timestamp = time;
-                //                        test2_disk[found].setPageLocation(virtualPageNum+x, i);
-                //                    }
-                //                }
-                //                if (done) break;
-                //            }
-
-                //        }
-                //        //std::cout << "No fault, space in memory: " << line << std::endl;
-                //        test2_memSize++;
-                //    }
-                //} else {
-                //    //std::cout << "No fault, already exists in memory: " << line << std::endl;
-                //}
-
                 //Algorithm 2
                 if (test2_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (test2_memSize == memFrames) {
-                        int pagesAbove = 0;
-                        if(((test2_disk[found].getSize()-1) - virtualPageNum) < 4)
+                        int pagesAbove = 10;
+                        if(((test2_disk[found].getSize()-1) - virtualPageNum) < pagesAbove)
                         {
                             pagesAbove = (test2_disk[found].getSize()-1) - virtualPageNum;
                         }
@@ -362,8 +263,8 @@ int main(int argc, char **argv) {
                     } else {
                         if((memFrames - test2_memSize) > 4)
                         {
-                            int pagesAbove = 4;
-                            if(((test2_disk[found].getSize()-1) - virtualPageNum) < 4)
+                            int pagesAbove = 10;
+                            if(((test2_disk[found].getSize()-1) - virtualPageNum) < pagesAbove)
                             {
                                 pagesAbove = (test2_disk[found].getSize()-1) - virtualPageNum;
                             }
@@ -386,8 +287,8 @@ int main(int argc, char **argv) {
                         }
                         else
                         {
-                            int pagesAbove = 4;
-                            if(test2_disk[found].getSize() < 4)
+                            int pagesAbove = 10;
+                            if(test2_disk[found].getSize() < pagesAbove)
                             {
                                 pagesAbove = (test2_disk[found].getSize()-1) - virtualPageNum;
                             }
@@ -487,8 +388,24 @@ int main(int argc, char **argv) {
                 if (test4_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
                     if (test4_memSize == memFrames) {
                         // memory is at capacity, need to replace here
-                        
-                        srand(time(NULL));
+                        int pageToKick = rand() % memFrames;
+
+                        int tempProc = test4_memory[pageToKick].processNumber;
+                        int tempPage = test4_memory[pageToKick].pageNumber;
+
+                        test4_memory[pageToKick].processNumber = processNum;
+                        test4_memory[pageToKick].pageNumber = virtualPageNum;
+                        test4_memory[pageToKick].timestamp = time; 
+                        test4_disk[found].setPageLocation(virtualPageNum, pageToKick);
+                        for(int i =0; i<diskUsageCounter; i++)
+                        {
+                            if(test4_disk[i].getProcessNumber() == tempProc)
+                            {
+                                test4_disk[i].setPageLocation(tempPage, -1);
+                            }
+                        }
+
+                        test4_pageFaults++;
                     } else {
                         for (int i = 0; i < memFrames; i++) {
                             if (test4_memory[i].processNumber == -1) {
@@ -547,8 +464,7 @@ int main(int argc, char **argv) {
                 // disk[found];
             } else {
                 //std::cout << "Invalid: " << line << std::endl;
-            }
-        } else {
+            } } else {
             //std::cout << "Unrecognized Command: " << command << std::endl;
         }
     }
@@ -567,6 +483,10 @@ int main(int argc, char **argv) {
 
     std::cout << "\nAlgorithm 3 Results:" << std::endl;
     std::cout << "Page Fault Amount: " << test3_pageFaults << std::endl;
+    std::cout << "Total Page References: " << totalReferences << std::endl;
+
+    std::cout << "\nAlgorithm 4 Results:" << std::endl;
+    std::cout << "Page Fault Amount: " << test4_pageFaults << std::endl;
     std::cout << "Total Page References: " << totalReferences << std::endl;
 
     delete [] memory;
