@@ -47,7 +47,6 @@ Process::Process(std::string name, int ref, int pages, int phase, bool loc) {
     for (int i = 0; i < numPhases; i++) {
         locality[i] = 0;
     }
-    srand(time(NULL));
     // randomly distribute locality
     if (loc) {
         int numRand = numPhases * LOCALITY_RATE;
