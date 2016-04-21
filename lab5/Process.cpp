@@ -1,6 +1,7 @@
 #include "Process.h"
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
 
 Process::Process() {
     processNumber = -1;
@@ -39,16 +40,13 @@ int Process::getRandomPage() {
     srand(time(NULL));
     int ret = -1;
     if (pagesInMemory > 0) {
-        int randPage = (rand() % pagesInMemory);
-        int pageCounter = 0;
+        std::vector<int> randomPages;
         for (int i = 0; i < addressSpaceSize; i++) {
             if (pages[i] != -1) {
-                pageCounter++;
-            }
-            if (pageCounter == randPage) {
-                ret = pages[i];
+                randomPages.push_back(pages[i]);
             }
         }
+        ret = randomPages[rand() % randomPages.size()];
     }
     return ret;
 }
