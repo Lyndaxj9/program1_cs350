@@ -352,17 +352,17 @@ int main(int argc, char **argv) {
                             }
 
                         } else {
-                            // int oldProcessNum = test3_memory[randomPage].processNumber;
-                            // int oldPageNum = test3_memory[randomPage].pageNumber;
-                            // test3_memory[randomPage].processNumber = processNum;
-                            // test3_memory[randomPage].pageNumber = virtualPageNum;
-                            // test3_memory[randomPage].timestamp = time;
+                            int oldProcessNum = test3_memory[randomPage].processNumber;
+                            int oldPageNum = test3_memory[randomPage].pageNumber;
+                            test3_memory[randomPage].processNumber = processNum;
+                            test3_memory[randomPage].pageNumber = virtualPageNum;
+                            test3_memory[randomPage].timestamp = time;
 
-                            // for (int i = 0; i < diskUsageCounter; i++) {
-                            //     if (test3_disk[i].getProcessNumber() == oldProcessNum) {
-                            //         test3_disk[i].setPageLocation(oldPageNum, -1);
-                            //     }
-                            // }
+                            for (int i = 0; i < diskUsageCounter; i++) {
+                                if (test3_disk[i].getProcessNumber() == oldProcessNum) {
+                                    test3_disk[i].setPageLocation(oldPageNum, -1);
+                                }
+                            }
                         }
                         test3_pageFaults++;
                         // std::cout << "Page Fault, memory full: " << line << std::endl;
