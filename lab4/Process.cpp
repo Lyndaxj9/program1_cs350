@@ -3,7 +3,7 @@
 #include <time.h>
 #include <sstream>
 
-#define LOCALITY_RATE 0.5
+#define LOCALITY_RATE 1
 #define LOCALITY_FREQ 0.25
 
 Process::Process() {
