@@ -215,12 +215,8 @@ int main(int argc, char **argv) {
                                 break;
                             }
                         }
-                        //std::cout << "No fault, space in memory: " << line << std::endl;
                         test1_memSize++;
                     }
-                } else {
-                    //std::cout << "No fault, already exists in memory: " << line << std::endl;
-                }
 
                 //Algorithm 2
                 if (test2_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
