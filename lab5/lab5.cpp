@@ -217,6 +217,9 @@ int main(int argc, char **argv) {
                         }
                         test1_memSize++;
                     }
+                } else {
+                    std::cout << "No fault, already exists in memory: " << line << std::endl;
+                }
 
                 //Algorithm 2
                 if (test2_disk[found].getPageLocation(virtualPageNum) == -1) { //not in memory
@@ -460,7 +463,8 @@ int main(int argc, char **argv) {
                 // disk[found];
             } else {
                 //std::cout << "Invalid: " << line << std::endl;
-            } } else {
+            } 
+        } else {
             //std::cout << "Unrecognized Command: " << command << std::endl;
         }
     }
